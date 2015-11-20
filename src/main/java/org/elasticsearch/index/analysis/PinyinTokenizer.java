@@ -31,14 +31,13 @@ public class PinyinTokenizer extends Tokenizer {
     private String padding_char;
     private String first_letter;
 
-    public PinyinTokenizer(Reader reader, String padding_char, String first_letter) {
-        this(reader, DEFAULT_BUFFER_SIZE);
+    public PinyinTokenizer(String padding_char, String first_letter) {
+        this(DEFAULT_BUFFER_SIZE);
         this.padding_char = padding_char;
         this.first_letter = first_letter;
     }
 
-    public PinyinTokenizer(Reader input, int bufferSize) {
-        super(input);
+    public PinyinTokenizer(int bufferSize) {
         termAtt.resizeBuffer(bufferSize);
         format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);

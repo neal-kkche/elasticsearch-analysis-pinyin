@@ -8,6 +8,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.util.CharTokenizer;
+import org.apache.lucene.util.AttributeFactory;
 import org.apache.lucene.util.Version;
 
 import java.io.Reader;
@@ -22,36 +23,36 @@ public class PinyinAbbreviationsTokenizer extends CharTokenizer {
     private HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
     private static Pattern pattern = Pattern.compile("^[\\u4e00-\\u9fa5]$");
 
-    public PinyinAbbreviationsTokenizer(Reader reader) {
-        this(reader, DEFAULT_BUFFER_SIZE);
-    }
-
-    public PinyinAbbreviationsTokenizer(Reader input, int bufferSize) {
-        super(Version.LUCENE_41,input);
-        termAtt.resizeBuffer(bufferSize);
+    public PinyinAbbreviationsTokenizer() {
+        super();
+        termAtt.resizeBuffer(DEFAULT_BUFFER_SIZE);
         format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
         format.setVCharType(HanyuPinyinVCharType.WITH_V);
     }
 
-
-    @Override
-    public boolean isTokenChar(int c){
-        Matcher matcher = pattern.matcher(String.valueOf(c));
-            return  Character.isLetterOrDigit(c)|| matcher.matches();
+    public PinyinAbbreviationsTokenizer(AttributeFactory factory) {
+        super(factory);
     }
 
-  @Override
-  protected int normalize(int c) {
-       try {
-                    String[] strs = PinyinHelper.toHanyuPinyinStringArray((char) c, format);
-                    if (strs != null) {
-                        termAtt.append(strs[0]);
-                       return  strs[0].codePointAt(0);
-                    }
-                } catch (BadHanyuPinyinOutputFormatCombination badHanyuPinyinOutputFormatCombination) {
-                    badHanyuPinyinOutputFormatCombination.printStackTrace();
-                }
-      return c;
-  }
+
+    @Override
+    public boolean isTokenChar(int c) {
+        Matcher matcher = pattern.matcher(String.valueOf(c));
+        return Character.isLetterOrDigit(c) || matcher.matches();
+    }
+
+    @Override
+    protected int normalize(int c) {
+        try {
+            String[] strs = PinyinHelper.toHanyuPinyinStringArray((char) c, format);
+            if (strs != null) {
+                termAtt.append(strs[0]);
+                return strs[0].codePointAt(0);
+            }
+        } catch (BadHanyuPinyinOutputFormatCombination badHanyuPinyinOutputFormatCombination) {
+            badHanyuPinyinOutputFormatCombination.printStackTrace();
+        }
+        return c;
+    }
 }

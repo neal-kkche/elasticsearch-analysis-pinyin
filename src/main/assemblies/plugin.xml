@@ -23,9 +23,13 @@
             </includes>
         </dependencySet>
     </dependencySets>
-   <fileSets>
+    <fileSets>
         <fileSet>
             <directory>${basedir}/lib/</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/resources/</directory>
             <outputDirectory>/</outputDirectory>
         </fileSet>
     </fileSets>

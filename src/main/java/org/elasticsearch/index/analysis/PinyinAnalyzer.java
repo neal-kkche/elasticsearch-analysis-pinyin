@@ -23,13 +23,13 @@ public final class PinyinAnalyzer extends Analyzer {
         padding_char = settings.get("padding_char", "");
     }
 
-    @Override
-    protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
-                    if (first_letter.equals("only")) {
-                        return new TokenStreamComponents(new PinyinAbbreviationsTokenizer(reader));
-                    } else {
-                        return new TokenStreamComponents(new PinyinTokenizer(reader, padding_char, first_letter));
-                    }
-    }
 
+    @Override
+    protected TokenStreamComponents createComponents(String s) {
+        if (first_letter.equals("only")) {
+            return new TokenStreamComponents(new PinyinAbbreviationsTokenizer());
+        } else {
+            return new TokenStreamComponents(new PinyinTokenizer(padding_char, first_letter));
+        }
+    }
 }
